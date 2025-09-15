@@ -1,0 +1,58 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/theme.json",
+  "version": 2,
+  "settings": {
+    "color": {
+      "palette": [
+        { "name": "Primary", "slug": "primary", "color": "#01A7E5" },
+        { "name": "Ink", "slug": "ink", "color": "#0F172A" },
+        { "name": "Text", "slug": "text", "color": "#1F2937" },
+        { "name": "Accent Dark", "slug": "accent-dark", "color": "#0B3A5B" },
+        { "name": "Light", "slug": "light", "color": "#F5F7FA" },
+        { "name": "White", "slug": "white", "color": "#FFFFFF" }
+      ],
+      "defaultPalette": false
+    },
+    "typography": {
+      "fontFamilies": [
+        { "fontFamily": "Lato, sans-serif", "slug": "lato", "name": "Lato" },
+        { "fontFamily": "Raleway, sans-serif", "slug": "raleway", "name": "Raleway" }
+      ],
+      "fluidTypography": true
+    }
+  },
+  "styles": {
+    "color": {
+      "background": "var(--wp--preset--color--light)",
+      "text": "var(--wp--preset--color--text)"
+    },
+    "typography": {
+      "fontFamily": "var(--wp--preset--font-family--lato)",
+      "fontSize": "16px"
+    },
+    "elements": {
+      "button": {
+        "color": {
+          "background": "var(--wp--preset--color--primary)",
+          "text": "var(--wp--preset--color--white)"
+        },
+        "border": {
+          "radius": "6px"
+        }
+      },
+      "link": {
+        "color": {
+          "text": "var(--wp--preset--color--primary)"
+        }
+      }
+    },
+    "blocks": {
+      "heading": {
+        "typography": {
+          "fontFamily": "var(--wp--preset--font-family--raleway)",
+          "fontWeight": "700"
+        }
+      }
+    }
+  }
+}
