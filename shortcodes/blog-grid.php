@@ -9,7 +9,7 @@
 
 if ( ! function_exists( 'ccc_blog_cards_shortcode' ) ) {
 	function ccc_blog_cards_shortcode() {
-		$per_page = 6; // 3 columns x 2 rows
+		$per_page = 3; // 3 columns x 2 rows
 		$current  = isset( $_GET['blog_page'] ) ? max( 1, (int) $_GET['blog_page'] ) : 1;
 		$search   = isset( $_GET['searchTerm'] ) ? sanitize_text_field( wp_unslash( $_GET['searchTerm'] ) ) : '';
 
@@ -103,16 +103,17 @@ if ( ! function_exists( 'ccc_blog_cards_shortcode' ) ) {
 					array( 'blog_page' => $current + 1 ) ),
 					$base_url ) : '';
 				?>
-				<div class="flex items-center justify-center gap-3 mt-[20px]">
+				<div class="flex items-center justify-center gap-12 mt-[20px]">
 					<?php
 					if ( $prev_url ): ?>
 						<a href="<?php
 						echo esc_url( $prev_url ); ?>"
-						   class="px-4 py-2 rounded-md border border-slate-200 text-slate-700 hover:bg-slate-50">Previous
+						   class="px-8 py-2 text-center rounded-md border border-slate-200 text-slate-700 hover:bg-slate-50">
+							Previous
 						</a>
 					<?php
 					else: ?>
-						<span class="px-4 py-2 rounded-md border border-slate-200 text-slate-400 cursor-not-allowed">Previous</span>
+						<span class="px-8 py-2 text-center rounded-md border border-slate-200 text-slate-400 cursor-not-allowed">Previous</span>
 					<?php
 					endif; ?>
 					<span class="text-sm text-slate-500">Page <?php
@@ -122,11 +123,11 @@ if ( ! function_exists( 'ccc_blog_cards_shortcode' ) ) {
 					if ( $next_url ): ?>
 						<a href="<?php
 						echo esc_url( $next_url ); ?>"
-						   class="px-4 py-2 rounded-md border border-slate-200 text-slate-700 hover:bg-slate-50">Next
+						   class="px-8 py-2 text-center rounded-md border border-slate-200 text-slate-700 hover:bg-slate-50">Next
 						</a>
 					<?php
 					else: ?>
-						<span class="px-4 py-2 rounded-md border border-slate-200 text-slate-400 cursor-not-allowed">Next</span>
+						<span class="px-8 py-2 text-center rounded-md border border-slate-200 text-slate-400 cursor-not-allowed">Next</span>
 					<?php
 					endif; ?>
 				</div>
