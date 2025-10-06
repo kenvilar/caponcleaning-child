@@ -67,17 +67,17 @@ if ( ! function_exists( 'ccc_blog_cards_shortcode' ) ) {
 									the_post_thumbnail( 'large', array( 'class' => 'w-full h-190! object-cover' ) ); ?>
 								<?php
 								else : ?>
-									<div class="w-full h-48 bg-slate-100 flex items-center justify-center text-slate-400">No image</div>
+									<div class="w-full h-190! bg-slate-100 flex items-center justify-center text-slate-400">No image</div>
 								<?php
 								endif; ?>
 							</a>
-							<div class="p-5">
-								<h3 class="text-lg font-semibold leading-tight text-slate-900 mb-3">
+							<div class="px-12 h-full flex flex-col justify-between">
+								<h3 class="text-[18px]! font-semibold leading-tight text-slate-900 mb-3">
 									<a href="<?php
 									the_permalink(); ?>" class="hover:text-indigo-600"><?php
 										the_title(); ?></a>
 								</h3>
-								<p class="text-slate-600 text-sm"><?php
+								<p class="text-slate-600 text-sm h-full"><?php
 									echo esc_html( wp_trim_words( get_the_excerpt() ?: wp_strip_all_tags( get_the_content() ),
 										30,
 										'...' ) ); ?></p>
