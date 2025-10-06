@@ -75,11 +75,12 @@ if ( ! function_exists( 'ccc_blog_cards_shortcode' ) ) {
 									endif; ?>
 								</div>
 								<div class="px-12 h-full flex flex-col justify-between">
-									<h3 class="text-[18px]! font-semibold leading-tight text-slate-900 mb-3">
+									<h3 class="text-[18px]! font-semibold leading-tight text-slate-900 mb-3" my-text-limit="2">
 										<?php
 										the_title(); ?>
 									</h3>
-									<p class="text-slate-600 text-sm h-full"><?php
+									<p class="text-slate-600 text-sm h-full" my-text-limit="4">
+										<?php
 										echo esc_html( wp_trim_words( get_the_excerpt() ?: wp_strip_all_tags( get_the_content() ),
 											30,
 											'...' ) ); ?></p>
@@ -139,6 +140,21 @@ if ( ! function_exists( 'ccc_blog_cards_shortcode' ) ) {
 			<?php
 			endif; ?>
 		</div>
+		<script>
+			document.addEventListener("DOMContentLoaded", function () {
+				var elementsWithTextLimit = document.querySelectorAll('[my-text-limit]');
+				elementsWithTextLimit.forEach(function (element) {
+					var numberOfLines = parseInt(element.getAttribute('my-text-limit'));
+					if (!isNaN(numberOfLines)) {
+						element.style.overflow = 'hidden';
+						element.style.textOverflow = 'ellipsis';
+						element.style.display = '-webkit-box';
+						element.style.webkitLineClamp = numberOfLines;
+						element.style.webkitBoxOrient = 'vertical';
+					}
+				});
+			});
+		</script>
 		<?php
 
 		return ob_get_clean();
