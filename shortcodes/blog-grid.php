@@ -60,29 +60,31 @@ if ( ! function_exists( 'ccc_blog_cards_shortcode' ) ) {
 					while ( $q->have_posts() ) : $q->the_post(); ?>
 						<article class="bg-white rounded-lg shadow-md overflow-hidden border border-slate-100 group">
 							<a href="<?php
-							the_permalink(); ?>" class="block h-190! overflow-hidden">
-								<?php
-								if ( has_post_thumbnail() ) : ?>
+							the_permalink(); ?>">
+								<div class="h-190! overflow-hidden">
 									<?php
-									the_post_thumbnail( 'large',
-										array( 'class' => 'w-full object-cover group-hover:scale-105 transition-transform duration-300' ) ); ?>
-								<?php
-								else : ?>
-									<div class="w-full h-full bg-slate-100 flex items-center justify-center text-slate-400">No image</div>
-								<?php
-								endif; ?>
+									if ( has_post_thumbnail() ) : ?>
+										<?php
+										the_post_thumbnail( 'large',
+											array( 'class' => 'w-full object-cover group-hover:scale-105 transition-transform duration-300' ) ); ?>
+									<?php
+									else : ?>
+										<div class="w-full h-full bg-slate-100 flex items-center justify-center text-slate-400">No image
+										</div>
+									<?php
+									endif; ?>
+								</div>
+								<div class="px-12 h-full flex flex-col justify-between">
+									<h3 class="text-[18px]! font-semibold leading-tight text-slate-900 mb-3">
+										<?php
+										the_title(); ?>
+									</h3>
+									<p class="text-slate-600 text-sm h-full"><?php
+										echo esc_html( wp_trim_words( get_the_excerpt() ?: wp_strip_all_tags( get_the_content() ),
+											30,
+											'...' ) ); ?></p>
+								</div>
 							</a>
-							<div class="px-12 h-full flex flex-col justify-between">
-								<h3 class="text-[18px]! font-semibold leading-tight text-slate-900 mb-3">
-									<a href="<?php
-									the_permalink(); ?>" class="hover:text-indigo-600"><?php
-										the_title(); ?></a>
-								</h3>
-								<p class="text-slate-600 text-sm h-full"><?php
-									echo esc_html( wp_trim_words( get_the_excerpt() ?: wp_strip_all_tags( get_the_content() ),
-										30,
-										'...' ) ); ?></p>
-							</div>
 						</article>
 					<?php
 					endwhile;
