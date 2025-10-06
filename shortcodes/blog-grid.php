@@ -3,15 +3,15 @@
  * Shortcode: [blog_cards]
  * Outputs recent blog posts in a Tailwind card grid with search and pagination.
  * No attributes. Uses query args within the same page:
- * - blog_s: search term
+ * - searchTerm: search term
  * - blog_page: page number
  */
 
 if (!function_exists('ccc_blog_cards_shortcode')) {
     function ccc_blog_cards_shortcode() {
-        $per_page = 9; // 3 columns x 2 rows
+        $per_page = 6; // 3 columns x 2 rows
         $current = isset($_GET['blog_page']) ? max(1, (int) $_GET['blog_page']) : 1;
-        $search  = isset($_GET['blog_s']) ? sanitize_text_field(wp_unslash($_GET['blog_s'])) : '';
+        $search  = isset($_GET['searchTerm']) ? sanitize_text_field(wp_unslash($_GET['searchTerm'])) : '';
 
         $args = array(
             'post_type'           => 'post',
@@ -32,14 +32,14 @@ if (!function_exists('ccc_blog_cards_shortcode')) {
             <!-- Search bar -->
             <form method="get" action="" class="w-full flex justify-center mb-8">
                 <div class="relative w-full max-w-xl">
-                    <input type="text" name="blog_s" value="<?php echo esc_attr($search); ?>" placeholder="Search the blog" class="w-full pl-12 pr-4 py-3 rounded-full border border-slate-200 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 text-slate-700" />
+                    <input type="text" name="searchTerm" value="<?php echo esc_attr($search); ?>" placeholder="Search the blog" class="w-full pl-12 pr-4 py-3 rounded-full border border-slate-200 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 text-slate-700" />
                     <button type="submit" class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600" aria-label="Search">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M12.9 14.32a8 8 0 111.414-1.414l3.387 3.386a1 1 0 01-1.414 1.415l-3.387-3.387zM14 8a6 6 0 11-12 0 6 6 0 0112 0z" clip-rule="evenodd"/></svg>
                     </button>
                     <?php
                     // Preserve other query args except our own pagination param
                     foreach ($_GET as $key => $value) {
-                        if ($key !== 'blog_s' && $key !== 'blog_page') {
+                        if ($key !== 'searchTerm' && $key !== 'blog_page') {
                             echo '<input type="hidden" name="' . esc_attr($key) . '" value="' . esc_attr($value) . '">';
                         }
                     }
@@ -48,7 +48,7 @@ if (!function_exists('ccc_blog_cards_shortcode')) {
             </form>
 
             <?php if ($q->have_posts()) : ?>
-                <div class="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="grid grid-cols-3 sm:grid-cols-1 md:grid-cols-2 gap-32">
                     <?php while ($q->have_posts()) : $q->the_post(); ?>
                         <article class="bg-white rounded-lg shadow-md overflow-hidden border border-slate-100">
                             <a href="<?php the_permalink(); ?>" class="block">
