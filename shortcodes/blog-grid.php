@@ -30,14 +30,14 @@ if ( ! function_exists( 'ccc_blog_cards_shortcode' ) ) {
 		?>
 		<div class="w-full">
 			<!-- Search bar -->
-			<form method="get" action="" class="w-full flex justify-center mb-8">
-				<div class="relative w-full max-w-xl">
+			<form method="get" action="" class="w-full flex justify-center mb-[20px]!">
+				<div class="relative w-full max-w-[360px]! rounded-full border border-slate-200 shadow-sm overflow-hidden">
 					<input type="text" name="searchTerm" value="<?php
 					echo esc_attr( $search ); ?>" placeholder="Search the blog"
-					       class="w-full pl-12 pr-4 py-3 rounded-full border border-slate-200 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 text-slate-700"/>
-					<button type="submit" class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
-					        aria-label="Search">
-						<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+					       class="w-full pl-[12px]! pr-[4px]! py-[10px]! rounded-full border border-slate-200 shadow-sm focus:outline-none text-slate-700"/>
+					<button type="submit" aria-label="Search"
+					        style="color: #90a1b9;height: 100%;position: absolute;right: 0;left: auto;top: auto;bottom: auto;background-color: white;font-size: initial;border: 0px solid transparent;padding: 0 4px;border-radius: 50%;overflow: hidden;">
+						<svg xmlns="http://www.w3.org/2000/svg" class="h-[20px]! w-[20px]!" viewBox="0 0 20 20" fill="currentColor">
 							<path fill-rule="evenodd"
 							      d="M12.9 14.32a8 8 0 111.414-1.414l3.387 3.386a1 1 0 01-1.414 1.415l-3.387-3.387zM14 8a6 6 0 11-12 0 6 6 0 0112 0z"
 							      clip-rule="evenodd"/>
@@ -58,16 +58,17 @@ if ( ! function_exists( 'ccc_blog_cards_shortcode' ) ) {
 				<div class="grid grid-cols-3 sm:grid-cols-1 md:grid-cols-2 gap-32">
 					<?php
 					while ( $q->have_posts() ) : $q->the_post(); ?>
-						<article class="bg-white rounded-lg shadow-md overflow-hidden border border-slate-100">
+						<article class="bg-white rounded-lg shadow-md overflow-hidden border border-slate-100 group">
 							<a href="<?php
-							the_permalink(); ?>" class="block">
+							the_permalink(); ?>" class="block h-190! overflow-hidden">
 								<?php
 								if ( has_post_thumbnail() ) : ?>
 									<?php
-									the_post_thumbnail( 'large', array( 'class' => 'w-full h-190! object-cover' ) ); ?>
+									the_post_thumbnail( 'large',
+										array( 'class' => 'w-full object-cover group-hover:scale-105 transition-transform duration-300' ) ); ?>
 								<?php
 								else : ?>
-									<div class="w-full h-190! bg-slate-100 flex items-center justify-center text-slate-400">No image</div>
+									<div class="w-full h-full bg-slate-100 flex items-center justify-center text-slate-400">No image</div>
 								<?php
 								endif; ?>
 							</a>
@@ -102,7 +103,7 @@ if ( ! function_exists( 'ccc_blog_cards_shortcode' ) ) {
 					array( 'blog_page' => $current + 1 ) ),
 					$base_url ) : '';
 				?>
-				<div class="flex items-center justify-center gap-3 mt-8">
+				<div class="flex items-center justify-center gap-3 mt-[20px]">
 					<?php
 					if ( $prev_url ): ?>
 						<a href="<?php
