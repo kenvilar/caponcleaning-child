@@ -9,7 +9,7 @@
 
 if ( ! function_exists( 'ccc_blog_cards_shortcode' ) ) {
 	function ccc_blog_cards_shortcode() {
-		$per_page = 3; // 3 columns x 2 rows
+		$per_page = 9; // 3 columns x 2 rows
 		$current  = isset( $_GET['blog_page'] ) ? max( 1, (int) $_GET['blog_page'] ) : 1;
 		$search   = isset( $_GET['searchTerm'] ) ? sanitize_text_field( wp_unslash( $_GET['searchTerm'] ) ) : '';
 
