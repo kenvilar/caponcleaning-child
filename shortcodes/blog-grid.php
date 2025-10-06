@@ -75,7 +75,7 @@ if ( ! function_exists( 'ccc_blog_cards_shortcode' ) ) {
 									endif; ?>
 								</div>
 								<div class="px-12 h-full flex flex-col justify-between">
-									<h3 class="text-[18px]! font-semibold leading-tight text-slate-900 mb-3" my-text-limit="2">
+									<h3 class="text-[18px]! pb-16 font-semibold leading-tight text-slate-900 mb-3" my-text-limit="2">
 										<?php
 										the_title(); ?>
 									</h3>
