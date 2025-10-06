@@ -7,100 +7,138 @@
  * - blog_page: page number
  */
 
-if (!function_exists('ccc_blog_cards_shortcode')) {
-    function ccc_blog_cards_shortcode() {
-        $per_page = 6; // 3 columns x 2 rows
-        $current = isset($_GET['blog_page']) ? max(1, (int) $_GET['blog_page']) : 1;
-        $search  = isset($_GET['searchTerm']) ? sanitize_text_field(wp_unslash($_GET['searchTerm'])) : '';
+if ( ! function_exists( 'ccc_blog_cards_shortcode' ) ) {
+	function ccc_blog_cards_shortcode() {
+		$per_page = 6; // 3 columns x 2 rows
+		$current  = isset( $_GET['blog_page'] ) ? max( 1, (int) $_GET['blog_page'] ) : 1;
+		$search   = isset( $_GET['searchTerm'] ) ? sanitize_text_field( wp_unslash( $_GET['searchTerm'] ) ) : '';
 
-        $args = array(
-            'post_type'           => 'post',
-            'post_status'         => 'publish',
-            'ignore_sticky_posts' => true,
-            'posts_per_page'      => $per_page,
-            'paged'               => $current,
-        );
-        if ($search !== '') {
-            $args['s'] = $search;
-        }
+		$args = array(
+			'post_type'           => 'post',
+			'post_status'         => 'publish',
+			'ignore_sticky_posts' => true,
+			'posts_per_page'      => $per_page,
+			'paged'               => $current,
+		);
+		if ( $search !== '' ) {
+			$args['s'] = $search;
+		}
 
-        $q = new WP_Query($args);
+		$q = new WP_Query( $args );
 
-        ob_start();
-        ?>
-        <div class="w-full">
-            <!-- Search bar -->
-            <form method="get" action="" class="w-full flex justify-center mb-8">
-                <div class="relative w-full max-w-xl">
-                    <input type="text" name="searchTerm" value="<?php echo esc_attr($search); ?>" placeholder="Search the blog" class="w-full pl-12 pr-4 py-3 rounded-full border border-slate-200 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 text-slate-700" />
-                    <button type="submit" class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600" aria-label="Search">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M12.9 14.32a8 8 0 111.414-1.414l3.387 3.386a1 1 0 01-1.414 1.415l-3.387-3.387zM14 8a6 6 0 11-12 0 6 6 0 0112 0z" clip-rule="evenodd"/></svg>
-                    </button>
-                    <?php
-                    // Preserve other query args except our own pagination param
-                    foreach ($_GET as $key => $value) {
-                        if ($key !== 'searchTerm' && $key !== 'blog_page') {
-                            echo '<input type="hidden" name="' . esc_attr($key) . '" value="' . esc_attr($value) . '">';
-                        }
-                    }
-                    ?>
-                </div>
-            </form>
+		ob_start();
+		?>
+		<div class="w-full">
+			<!-- Search bar -->
+			<form method="get" action="" class="w-full flex justify-center mb-8">
+				<div class="relative w-full max-w-xl">
+					<input type="text" name="searchTerm" value="<?php
+					echo esc_attr( $search ); ?>" placeholder="Search the blog"
+					       class="w-full pl-12 pr-4 py-3 rounded-full border border-slate-200 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 text-slate-700"/>
+					<button type="submit" class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
+					        aria-label="Search">
+						<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+							<path fill-rule="evenodd"
+							      d="M12.9 14.32a8 8 0 111.414-1.414l3.387 3.386a1 1 0 01-1.414 1.415l-3.387-3.387zM14 8a6 6 0 11-12 0 6 6 0 0112 0z"
+							      clip-rule="evenodd"/>
+						</svg>
+					</button>
+					<?php
+					// Preserve other query args except our own pagination param
+					foreach ( $_GET as $key => $value ) {
+						if ( $key !== 'searchTerm' && $key !== 'blog_page' ) {
+							echo '<input type="hidden" name="' . esc_attr( $key ) . '" value="' . esc_attr( $value ) . '">';
+						}
+					}
+					?>
+				</div>
+			</form>
+			<?php
+			if ( $q->have_posts() ) : ?>
+				<div class="grid grid-cols-3 sm:grid-cols-1 md:grid-cols-2 gap-32">
+					<?php
+					while ( $q->have_posts() ) : $q->the_post(); ?>
+						<article class="bg-white rounded-lg shadow-md overflow-hidden border border-slate-100">
+							<a href="<?php
+							the_permalink(); ?>" class="block">
+								<?php
+								if ( has_post_thumbnail() ) : ?>
+									<?php
+									the_post_thumbnail( 'large', array( 'class' => 'w-full h-190! object-cover' ) ); ?>
+								<?php
+								else : ?>
+									<div class="w-full h-48 bg-slate-100 flex items-center justify-center text-slate-400">No image</div>
+								<?php
+								endif; ?>
+							</a>
+							<div class="p-5">
+								<h3 class="text-lg font-semibold leading-tight text-slate-900 mb-3">
+									<a href="<?php
+									the_permalink(); ?>" class="hover:text-indigo-600"><?php
+										the_title(); ?></a>
+								</h3>
+								<p class="text-slate-600 text-sm"><?php
+									echo esc_html( wp_trim_words( get_the_excerpt() ?: wp_strip_all_tags( get_the_content() ),
+										30,
+										'...' ) ); ?></p>
+							</div>
+						</article>
+					<?php
+					endwhile;
+					wp_reset_postdata(); ?>
+				</div>
+				<?php
+				// Simple prev/next pagination
+				$total_pages   = (int) $q->max_num_pages;
+				$base_url      = remove_query_arg( array( 'blog_page' ) );
+				$args_preserve = array();
+				if ( $search !== '' ) {
+					$args_preserve['blog_s'] = $search;
+				}
 
-            <?php if ($q->have_posts()) : ?>
-                <div class="grid grid-cols-3 sm:grid-cols-1 md:grid-cols-2 gap-32">
-                    <?php while ($q->have_posts()) : $q->the_post(); ?>
-                        <article class="bg-white rounded-lg shadow-md overflow-hidden border border-slate-100">
-                            <a href="<?php the_permalink(); ?>" class="block">
-                                <?php if (has_post_thumbnail()) : ?>
-                                    <?php the_post_thumbnail('large', array('class' => 'w-full h-48 object-cover')); ?>
-                                <?php else : ?>
-                                    <div class="w-full h-48 bg-slate-100 flex items-center justify-center text-slate-400">No image</div>
-                                <?php endif; ?>
-                            </a>
-                            <div class="p-5">
-                                <h3 class="text-lg font-semibold leading-tight text-slate-900 mb-3">
-                                    <a href="<?php the_permalink(); ?>" class="hover:text-indigo-600"><?php the_title(); ?></a>
-                                </h3>
-                                <p class="text-slate-600 text-sm"><?php echo esc_html( wp_trim_words( get_the_excerpt() ?: wp_strip_all_tags( get_the_content() ), 30, '...' ) ); ?></p>
-                            </div>
-                        </article>
-                    <?php endwhile; wp_reset_postdata(); ?>
-                </div>
+				$prev_url = $current > 1 ? add_query_arg( array_merge( $args_preserve, array( 'blog_page' => $current - 1 ) ),
+					$base_url ) : '';
+				$next_url = $current < $total_pages ? add_query_arg( array_merge( $args_preserve,
+					array( 'blog_page' => $current + 1 ) ),
+					$base_url ) : '';
+				?>
+				<div class="flex items-center justify-center gap-3 mt-8">
+					<?php
+					if ( $prev_url ): ?>
+						<a href="<?php
+						echo esc_url( $prev_url ); ?>"
+						   class="px-4 py-2 rounded-md border border-slate-200 text-slate-700 hover:bg-slate-50">Previous
+						</a>
+					<?php
+					else: ?>
+						<span class="px-4 py-2 rounded-md border border-slate-200 text-slate-400 cursor-not-allowed">Previous</span>
+					<?php
+					endif; ?>
+					<span class="text-sm text-slate-500">Page <?php
+						echo (int) $current; ?> of <?php
+						echo (int) max( 1, $total_pages ); ?></span>
+					<?php
+					if ( $next_url ): ?>
+						<a href="<?php
+						echo esc_url( $next_url ); ?>"
+						   class="px-4 py-2 rounded-md border border-slate-200 text-slate-700 hover:bg-slate-50">Next
+						</a>
+					<?php
+					else: ?>
+						<span class="px-4 py-2 rounded-md border border-slate-200 text-slate-400 cursor-not-allowed">Next</span>
+					<?php
+					endif; ?>
+				</div>
+			<?php
+			else : ?>
+				<p class="text-center text-slate-500">No posts found.</p>
+			<?php
+			endif; ?>
+		</div>
+		<?php
 
-                <?php
-                // Simple prev/next pagination
-                $total_pages = (int) $q->max_num_pages;
-                $base_url = remove_query_arg(array('blog_page'));
-                $args_preserve = array();
-                if ($search !== '') { $args_preserve['blog_s'] = $search; }
+		return ob_get_clean();
+	}
 
-                $prev_url = $current > 1 ? add_query_arg( array_merge($args_preserve, array('blog_page' => $current - 1)), $base_url ) : '';
-                $next_url = $current < $total_pages ? add_query_arg( array_merge($args_preserve, array('blog_page' => $current + 1)), $base_url ) : '';
-                ?>
-                <div class="flex items-center justify-center gap-3 mt-8">
-                    <?php if ($prev_url): ?>
-                        <a href="<?php echo esc_url($prev_url); ?>" class="px-4 py-2 rounded-md border border-slate-200 text-slate-700 hover:bg-slate-50">Previous</a>
-                    <?php else: ?>
-                        <span class="px-4 py-2 rounded-md border border-slate-200 text-slate-400 cursor-not-allowed">Previous</span>
-                    <?php endif; ?>
-
-                    <span class="text-sm text-slate-500">Page <?php echo (int) $current; ?> of <?php echo (int) max(1, $total_pages); ?></span>
-
-                    <?php if ($next_url): ?>
-                        <a href="<?php echo esc_url($next_url); ?>" class="px-4 py-2 rounded-md border border-slate-200 text-slate-700 hover:bg-slate-50">Next</a>
-                    <?php else: ?>
-                        <span class="px-4 py-2 rounded-md border border-slate-200 text-slate-400 cursor-not-allowed">Next</span>
-                    <?php endif; ?>
-                </div>
-            <?php else : ?>
-                <p class="text-center text-slate-500">No posts found.</p>
-            <?php endif; ?>
-        </div>
-        <?php
-
-        return ob_get_clean();
-    }
-
-    add_shortcode('blog_cards', 'ccc_blog_cards_shortcode');
+	add_shortcode( 'blog_cards', 'ccc_blog_cards_shortcode' );
 }
