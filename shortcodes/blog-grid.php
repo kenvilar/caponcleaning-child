@@ -2,14 +2,22 @@
 /**
  * Shortcode: [blog_cards]
  * Outputs recent blog posts in a Tailwind card grid with search and pagination.
- * No attributes. Uses query args within the same page:
+ * Attributes:
+ * - for: optional value "single-blog" to customize behavior
+ * Uses query args within the same page:
  * - searchTerm: search term
  * - blog_page: page number
  */
 
 if ( ! function_exists( 'ccc_blog_cards_shortcode' ) ) {
-	function ccc_blog_cards_shortcode() {
-		$per_page = 9; // 3 columns x 2 rows
+	function ccc_blog_cards_shortcode( $atts ) {
+		$currentID = get_the_ID();
+		$atts      = shortcode_atts( array(
+			'for' => '',
+		), $atts );
+
+		$for      = $atts['for'];
+		$per_page = $for === 'single-blog' ? 3 : 9; // 3 columns x 2 rows
 		$current  = isset( $_GET['blog_page'] ) ? max( 1, (int) $_GET['blog_page'] ) : 1;
 		$search   = isset( $_GET['searchTerm'] ) ? sanitize_text_field( wp_unslash( $_GET['searchTerm'] ) ) : '';
 
@@ -19,6 +27,8 @@ if ( ! function_exists( 'ccc_blog_cards_shortcode' ) ) {
 			'ignore_sticky_posts' => true,
 			'posts_per_page'      => $per_page,
 			'paged'               => $current,
+			"orderby"             => $for === 'single-blog' ? "rand" : "date",
+			'post__not_in'        => $for === 'single-blog' ? [ $currentID ] : [],
 		);
 		if ( $search !== '' ) {
 			$args['s'] = $search;
@@ -30,7 +40,8 @@ if ( ! function_exists( 'ccc_blog_cards_shortcode' ) ) {
 		?>
 		<div class="w-full">
 			<!-- Search bar -->
-			<form method="get" action="" class="w-full flex justify-center mb-[20px]!">
+			<form method="get" action="" class="w-full flex justify-center mb-[20px]! <?php
+			echo $for === 'single-blog' ? 'hidden' : ''; ?>">
 				<div class="relative w-full max-w-[360px]! rounded-full border border-slate-200 shadow-sm overflow-hidden">
 					<input type="text" name="searchTerm" value="<?php
 					echo esc_attr( $search ); ?>" placeholder="Search the blog"
@@ -60,13 +71,13 @@ if ( ! function_exists( 'ccc_blog_cards_shortcode' ) ) {
 					while ( $q->have_posts() ) : $q->the_post(); ?>
 						<article class="bg-white rounded-lg shadow-md overflow-hidden border border-slate-100 group">
 							<a href="<?php
-							the_permalink(); ?>">
+							echo get_permalink( $q->post->ID ); ?>">
 								<div class="h-190! overflow-hidden">
 									<?php
 									if ( has_post_thumbnail() ) : ?>
 										<?php
 										the_post_thumbnail( 'large',
-											array( 'class' => 'w-full object-cover group-hover:scale-105 transition-transform duration-300' ) ); ?>
+											array( 'class' => 'w-full h-full object-cover group-hover:scale-105 transition-transform duration-300' ) ); ?>
 									<?php
 									else : ?>
 										<div class="w-full h-full bg-slate-100 flex items-center justify-center text-slate-400">No image
@@ -75,11 +86,11 @@ if ( ! function_exists( 'ccc_blog_cards_shortcode' ) ) {
 									endif; ?>
 								</div>
 								<div class="px-12 h-full flex flex-col justify-between">
-									<h3 class="text-[18px]! pb-16 font-semibold leading-tight text-slate-900 mb-3" my-text-limit="2">
+									<h3 class="text-[18px]! pb-16 font-semibold! leading-tight text-slate-900 mb-3" my-text-limit="2">
 										<?php
 										the_title(); ?>
 									</h3>
-									<p class="text-slate-600 text-sm h-full" my-text-limit="4">
+									<p class="text-slate-600! text-sm! font-normal! h-full" my-text-limit="4">
 										<?php
 										echo esc_html( wp_trim_words( get_the_excerpt() ?: wp_strip_all_tags( get_the_content() ),
 											30,
@@ -106,7 +117,8 @@ if ( ! function_exists( 'ccc_blog_cards_shortcode' ) ) {
 					array( 'blog_page' => $current + 1 ) ),
 					$base_url ) : '';
 				?>
-				<div class="flex items-center justify-center gap-12 mt-[20px]">
+				<div class="flex items-center justify-center gap-12 mt-[20px] <?php
+				echo $for === 'single-blog' ? 'hidden' : ''; ?>">
 					<?php
 					if ( $prev_url ): ?>
 						<a href="<?php
